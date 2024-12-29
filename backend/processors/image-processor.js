@@ -1,26 +1,43 @@
-const path = require('path');
-const fs = require('fs').promises;
-const BaseProcessor = require('./base-processor');
+const { spawn } = require('child_process');
 
-class ImageProcessor extends BaseProcessor {
-    async process(file) {
-        const outputPath = path.join('uploads', `output_${Date.now()}.txt`);
-        
-        try {
-            await this.execPromise(`tesseract ${file.path} ${outputPath.replace('.txt', '')}`);
-            const data = await fs.readFile(outputPath, 'utf8');
-            
-            await this.cleanup([file.path, outputPath]);
-            
-            return {
-                text: data,
-                originalFile: file.originalname
-            };
-        } catch (error) {
-            await this.cleanup([file.path, outputPath]);
-            throw new Error(`Image OCR processing failed: ${error.message}`);
+class ImageProcessor {
+  constructor(config) {
+    this.config = config.tesseractConfig;
+  }
+
+  async processImage(imagePath) {
+    return new Promise((resolve, reject) => {
+      const args = [
+        imagePath,
+        'stdout',
+        '-l', this.config.lang,
+        '--psm', this.config.psm,
+        '--oem', this.config.oem,
+        '-c', `tessedit_char_blacklist=${this.config.tessedit_char_blacklist}`,
+        '-c', `textord_heavy_nr=${this.config.textord_heavy_nr}`
+      ];
+
+      const process = spawn('tesseract', args);
+      let output = '';
+      let error = '';
+
+      process.stdout.on('data', (data) => {
+        output += data.toString();
+      });
+
+      process.stderr.on('data', (data) => {
+        error += data.toString();
+      });
+
+      process.on('close', (code) => {
+        if (code === 0) {
+          resolve(output.trim());
+        } else {
+          reject(new Error(`Tesseract process failed: ${error}`));
         }
-    }
+      });
+    });
+  }
 }
 
 module.exports = ImageProcessor; 

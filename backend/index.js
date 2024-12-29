@@ -2,7 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const { ImageProcessor, PdfProcessor } = require('./processors');
+const { ImageProcessor, PdfProcessor, ocrConfig } = require('./processors');
 
 const app = express();
 const upload = multer({ dest: 'uploads/' });
@@ -19,16 +19,28 @@ app.post('/ocr', upload.single('file'), async (req, res) => {
             return res.status(400).json({ error: 'No file uploaded' });
         }
 
-        const processor = req.file.mimetype === 'application/pdf' 
-            ? new PdfProcessor()
-            : new ImageProcessor();
-
-        const result = await processor.process(req.file);
-        res.json({ text: result.text });
-
+        if (req.file.mimetype === 'application/pdf') {
+            const pdfProcessor = new PdfProcessor(ocrConfig);
+            const outputPath = `uploads/${req.file.filename}_processed.pdf`;
+            
+            const result = await pdfProcessor.processPdf(req.file.path, outputPath);
+            res.json({ 
+                success: true,
+                message: 'PDF processed successfully',
+                outputPath: result.path,
+                text: result.text
+            });
+        } else {
+            const imageProcessor = new ImageProcessor(ocrConfig);
+            const text = await imageProcessor.processImage(req.file.path);
+            res.json({ 
+                success: true,
+                text 
+            });
+        }
     } catch (error) {
-        console.error(`Server error: ${error}`);
-        res.status(500).json({ error: 'Server error' });
+        console.error(`Processing error: ${error}`);
+        res.status(500).json({ error: 'Processing failed', details: error.message });
     }
 });
 

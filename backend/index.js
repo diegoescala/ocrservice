@@ -1,8 +1,8 @@
 const express = require('express');
 const multer = require('multer');
-const { exec } = require('child_process');
 const path = require('path');
 const fs = require('fs');
+const { ImageProcessor, PdfProcessor } = require('./processors');
 
 const app = express();
 const upload = multer({ dest: 'uploads/' });
@@ -19,61 +19,13 @@ app.post('/ocr', upload.single('file'), async (req, res) => {
             return res.status(400).json({ error: 'No file uploaded' });
         }
 
-        const filePath = req.file.path;
-        const outputPath = path.join('uploads', `output_${Date.now()}.txt`);
-        
-        // Check file mimetype
-        const isPDF = req.file.mimetype === 'application/pdf';
-        
-        if (isPDF) {
-            // Use OCRmyPDF for PDF files
-            const pdfOutputPath = outputPath.replace('.txt', '.pdf');
-            exec(`ocrmypdf ${filePath} ${pdfOutputPath} && pdftotext ${pdfOutputPath} ${outputPath}`, (error, stdout, stderr) => {
-                if (error) {
-                    console.error(`Error: ${error}`);
-                    return res.status(500).json({ error: 'PDF OCR processing failed' });
-                }
+        const processor = req.file.mimetype === 'application/pdf' 
+            ? new PdfProcessor()
+            : new ImageProcessor();
 
-                // Read the output file
-                fs.readFile(outputPath, 'utf8', (err, data) => {
-                    if (err) {
-                        console.error(`Error reading output: ${err}`);
-                        return res.status(500).json({ error: 'Error reading OCR output' });
-                    }
+        const result = await processor.process(req.file);
+        res.json({ text: result.text });
 
-                    // Clean up files
-                    fs.unlink(filePath, () => {});
-                    fs.unlink(outputPath, () => {});
-                    fs.unlink(pdfOutputPath, () => {});
-
-                    // Send the extracted text
-                    res.json({ text: data });
-                });
-            });
-        } else {
-            // Use Tesseract for image files
-            exec(`tesseract ${filePath} ${outputPath.replace('.txt', '')}`, (error, stdout, stderr) => {
-                if (error) {
-                    console.error(`Error: ${error}`);
-                    return res.status(500).json({ error: 'OCR processing failed' });
-                }
-
-                // Read the output file
-                fs.readFile(outputPath, 'utf8', (err, data) => {
-                    if (err) {
-                        console.error(`Error reading output: ${err}`);
-                        return res.status(500).json({ error: 'Error reading OCR output' });
-                    }
-
-                    // Clean up files
-                    fs.unlink(filePath, () => {});
-                    fs.unlink(outputPath, () => {});
-
-                    // Send the extracted text
-                    res.json({ text: data });
-                });
-            });
-        }
     } catch (error) {
         console.error(`Server error: ${error}`);
         res.status(500).json({ error: 'Server error' });

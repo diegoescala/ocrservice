@@ -1,0 +1,1 @@
+{"version":3,"sources":["app/db.cljs"],"mappings":";AAEA,oBAAA,2CAAA,uEAAA,KAAA,qDAAA,KAAA,2DAAA,MAAA,iEAAA,vUAAKA","names":["app.db/default-db"],"sourcesContent":["(ns app.db)\n\n(def default-db\n  {:current-route nil\n   :user nil\n   :loading false\n   :dark-mode? false}) "]}

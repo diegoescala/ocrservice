@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App - Your App Name</title>
+    <meta name="description" content="Your app description for SEO">
+    <link href="/css/main.css" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <noscript>
+            <div class="p-4 bg-yellow-100 text-yellow-700">
+                You need to enable JavaScript to run this app.
+            </div>
+        </noscript>
+    </div>
+
+    <!-- Loading indicator -->
+    <div id="loading" class="fixed inset-0 flex items-center justify-center bg-white dark:bg-gray-900">
+        <div class="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500"></div>
+    </div>
+
+    <script>
+        window.addEventListener('load', function() {
+            document.getElementById('loading').style.display = 'none';
+        });
+    </script>
+    <script src="/js/main.js"></script>
+</body>
+</html> 

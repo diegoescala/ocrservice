@@ -1,0 +1,6 @@
+goog.provide('app.views.pages.about');
+app.views.pages.about.about_page = (function app$views$pages$about$about_page(){
+return new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div.min-h-screen.bg-gray-50.dark:bg-gray-900","div.min-h-screen.bg-gray-50.dark:bg-gray-900",2001422263),new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [app.views.components.navbar.navbar], null),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"main.max-w-7xl.mx-auto.py-12.px-4.sm:px-6.lg:px-8","main.max-w-7xl.mx-auto.py-12.px-4.sm:px-6.lg:px-8",1488620573),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div.prose.dark:prose-invert.max-w-none","div.prose.dark:prose-invert.max-w-none",1244893008),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"h1","h1",-1896887462),"About Us"], null),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"p","p",151049309),"Your company description here."], null)], null)], null)], null);
+});
+
+//# sourceMappingURL=app.views.pages.about.js.map

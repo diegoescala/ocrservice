@@ -1,0 +1,20 @@
+{
+  "name": "your-app-name",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "run-p dev:*",
+    "dev:shadow": "shadow-cljs watch app",
+    "dev:css": "tailwindcss -i src/css/main.css -o public/css/main.css --watch",
+    "build": "run-s build:*",
+    "build:css": "tailwindcss -i src/css/main.css -o public/css/main.css --minify",
+    "build:shadow": "shadow-cljs release app"
+  },
+  "devDependencies": {
+    "npm-run-all": "^4.1.5"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  }
+} 

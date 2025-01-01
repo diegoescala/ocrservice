@@ -1,0 +1,1 @@
+{"version":3,"sources":["app/config.cljs"],"mappings":";AAEA,AAAKA,0BACMC;AAEX,AAAKC,qBACH,2BAAA,4BAAA,rDAAIF","names":["app.config/debug?","js/goog.DEBUG","app.config/api-url"],"sourcesContent":["(ns app.config)\n\n(def debug?\n  ^boolean goog.DEBUG)\n\n(def api-url\n  (if debug?\n    \"http://localhost:3000/api\"\n    \"/api\")) "]}
